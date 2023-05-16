@@ -19,6 +19,7 @@ import {
   INodeGroupStyle,
   IXAxisStyle,
   IYAxisStyle,
+  Tooltip,
 } from '../../types';
 import { useDebounce, useSafeState } from 'ahooks';
 import { getServiceToken, getTime } from '../../utils';
@@ -42,6 +43,7 @@ export interface IServiceProps {
   edgeConfig?: IEdgeGroupStyle;
 
   onNodeClick?: (node: INode) => void;
+  tooltip?: Tooltip;
 }
 // 数据处理 & 格式转换
 export const useService = ({
@@ -58,6 +60,7 @@ export const useService = ({
   edgeConfig,
   activeNodeIds,
   onNodeClick,
+  tooltip,
 }: IServiceProps) => {
   const size = useNoPaddingSize(containerRef);
   const [selection, setSelection] =
@@ -209,6 +212,7 @@ export const useService = ({
     setTransform,
     getCurrNodeConfig,
     getCurrEdgeConfig,
+    tooltip,
     onNodeClick,
   };
 };

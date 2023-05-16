@@ -80,3 +80,36 @@ export interface THeatMapItem {
   count: number;
   index: number;
 }
+
+// 边对象的浮动文本提示框
+export interface Tooltip {
+  // 是否显示
+  show?: boolean;
+  // 边框宽度
+  borderWidth?: number;
+  // 边框颜色
+  borderColor?: string;
+  // 背景颜色
+  backgroundColor?: string;
+  /**
+   * padding: 5 设置内边距为 5
+   * padding: [5, 10] 设置上下的内边距为 5，左右的内边距为 10
+   * padding: [
+   *     5,  // 上
+   *     10, // 右
+   *     5,  // 下
+   *     10, // 左
+   * ] 分别设置四个方向的内边距
+   */
+  padding?: Array<Number> | number;
+  // 字体大小
+  fontSize?: number;
+  // 字体颜色
+  color?: string;
+  // 指定tooltip的DOM节点的CSS类
+  className?: string;
+  // 提示框格式化内容
+  formatter?: {
+    (edge: IEdge): string;
+  };
+}

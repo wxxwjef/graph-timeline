@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { GraphTimeline, INode } from 'graph-timeline';
+import { GraphTimeline, INode, IEdge } from 'graph-timeline';
 import demo1Data from './demo1';
 import './index.less';
 import './iconfont/iconfont.css';
@@ -65,6 +65,12 @@ export default () => {
         width: 4,
         arrowRadius: 8,
         color: 'yellow',
+      },
+    },
+    tooltip: {
+      show: true,
+      formatter: (item: IEdge) => {
+        return '时间：\n' + new Date(item.time).toDateString();
       },
     },
   };

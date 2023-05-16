@@ -3,7 +3,7 @@ import * as d3 from 'd3';
 import { useSafeState } from 'ahooks';
 import { GraphTimeService } from './service';
 import { compileColor, getTime } from '../../utils';
-import { DEFAULT_EDGE_TYPE_STYLE } from '../../common/constants';
+import { DEFAULT_EDGE_TYPE_STYLE, DEFAULT_TOOLTIP } from '../../common/constants';
 import { isString } from 'lodash';
 import type { IEdge, THeatMapItem } from '../../types';
 
@@ -25,6 +25,7 @@ export default () => {
     getCurrNodeConfig,
     getCurrEdgeConfig,
     isHeatMap,
+    tooltip,
   } = useContext(GraphTimeService);
 
   const [chart, setChart] = useSafeState<d3.Selection<d3.BaseType, null, d3.BaseType, unknown>>();
@@ -322,6 +323,73 @@ export default () => {
         return `url(#${arrowId})`;
       });
 
+    if (tooltip && tooltip.show) {
+      if (!wrapper) return;
+
+      const tooltipBox = wrapper.select('.tooltipBox');
+
+      tooltipBox
+        .style('position', 'absolute')
+        .style(
+          'background-color',
+          tooltip.backgroundColor
+            ? tooltip.backgroundColor
+            : (DEFAULT_TOOLTIP['backgroundColor'] as string),
+        )
+        .style('color', tooltip.color ? tooltip.color : (DEFAULT_TOOLTIP['color'] as string))
+        .style(
+          'font-size',
+          tooltip.fontSize ? `${tooltip.fontSize}px` : `${DEFAULT_TOOLTIP['fontSize'] as number}px`,
+        )
+        .style('border-style', 'solid')
+        .style(
+          'border-width',
+          tooltip.borderWidth
+            ? `${tooltip.borderWidth}px`
+            : `${DEFAULT_TOOLTIP['borderWidth'] as number}px`,
+        )
+        .style(
+          'border-color',
+          tooltip.borderColor ? tooltip.borderColor : (DEFAULT_TOOLTIP['borderColor'] as string),
+        )
+        .style('box-shadow', 'rgb(0 0 0 / 20%) 1px 2px 10px')
+        .style('border-radius', '4px')
+        .style('display', 'none')
+        .style('padding', () => {
+          if (!tooltip.padding) {
+            return `${DEFAULT_TOOLTIP['padding']}px`;
+          }
+          if (typeof tooltip.padding === 'number') {
+            return `${tooltip.padding}px`;
+          } else {
+            const paddingArr = tooltip.padding as Array<number>;
+            if (paddingArr.length >= 4) {
+              return `${tooltip.padding[0]}px ${tooltip.padding[1]}px ${tooltip.padding[2]}px ${tooltip.padding[3]}px`;
+            }
+            if (paddingArr.length >= 2) {
+              return `${tooltip.padding[0]}px ${tooltip.padding[1]}px`;
+            }
+          }
+          return `${DEFAULT_TOOLTIP['padding']}px`;
+        });
+      line
+        .on('mouseenter', (event, edge: IEdge) => {
+          tooltipBox
+            .style('display', 'block')
+            .style('left', `${event.pageX + 20}px`)
+            .style('top', `${event.pageY}px`)
+            .html(
+              tooltip.formatter
+                ? tooltip.formatter(edge)
+                : () => {
+                    return `${edge.source} - ${edge.target}`;
+                  },
+            );
+        })
+        .on('mouseleave', () => {
+          tooltipBox.style('display', 'none');
+        });
+    }
     line.exit().remove();
   };
 
@@ -343,6 +411,8 @@ export default () => {
     let chart = wrapper.select('svg').selectAll('g.__chart').data([null]);
     const chartEnter: any = chart.enter().append('g').attr('class', '__chart');
     chart = chart.merge(chartEnter);
+
+    // chart.childNodes
     setChart(chart);
 
     // init gradient defs
@@ -370,6 +440,8 @@ export default () => {
       .enter()
       .append('defs')
       .attr('class', '__icon');
+
+    wrapper.append('div').attr('class', 'tooltipBox');
   }, [wrapper]);
 
   useEffect(() => {

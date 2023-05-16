@@ -160,7 +160,6 @@ export default () => {
       .attr('text-anchor', 'middle')
       .html((node: INode) => {
         const iconStyle = getCurrNodeConfig?.('iconStyle', node) || null;
-        console.log(node);
         return iconStyle ? (iconStyle.value as string) : null;
       })
       .exit();

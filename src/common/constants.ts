@@ -1,5 +1,5 @@
 import { TimeLocaleDefinition } from 'd3';
-import { INodeGroupStyle, IYAxisStyle, IXAxisStyle, IEdgeGroupStyle } from '../types';
+import { INodeGroupStyle, IYAxisStyle, IXAxisStyle, IEdgeGroupStyle, Tooltip } from '../types';
 
 export const classPrefix = 'graph-timeline';
 
@@ -74,4 +74,13 @@ export const DEFAULT_EDGE_TYPE_STYLE: IEdgeGroupStyle = {
   reverse: false,
   // 箭头半径
   arrowRadius: 10,
+};
+
+export const DEFAULT_TOOLTIP: Tooltip = {
+  borderWidth: 1,
+  borderColor: 'rgb(255,255,255)',
+  backgroundColor: 'rgba(255,255,255,1)',
+  padding: 10,
+  fontSize: 14,
+  color: 'rgb(102,102,102)',
 };
